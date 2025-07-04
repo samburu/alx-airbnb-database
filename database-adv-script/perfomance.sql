@@ -1,21 +1,20 @@
 -- ======================================
--- Initial Complex Query
+-- Step 1: Initial Complex Query (With WHERE + AND)
 -- ======================================
+
 EXPLAIN ANALYZE
-SELECT *
+SELECT
+    *
 FROM bookings b
 JOIN users u ON b.user_id = u.user_id
 JOIN properties p ON b.property_id = p.property_id
-LEFT JOIN payments pay ON pay.booking_id = b.booking_id;
+LEFT JOIN payments pay ON pay.booking_id = b.booking_id
+WHERE b.status = 'confirmed'
+  AND b.total_price > 100;
 
 -- ======================================
--- Optimized Version
--- Improvements:
--- Avoid SELECT * and select only needed fields
--- Use LEFT JOIN only where necessary
+-- Step 2: Optimized Query (Explicit fields, same WHERE/AND)
 -- ======================================
-
--- Assumes indexes already created in database_index.sql
 
 EXPLAIN ANALYZE
 SELECT
@@ -34,4 +33,6 @@ SELECT
 FROM bookings b
 JOIN users u ON b.user_id = u.user_id
 JOIN properties p ON b.property_id = p.property_id
-LEFT JOIN payments pay ON pay.booking_id = b.booking_id;
+LEFT JOIN payments pay ON pay.booking_id = b.booking_id
+WHERE b.status = 'confirmed'
+  AND b.total_price > 100;
