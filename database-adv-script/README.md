@@ -20,7 +20,7 @@ Explanation:
 
 ---
 
-## 2️ LEFT JOIN – Properties and Reviews
+## 2 LEFT JOIN – Properties and Reviews
 Query Goal: Retrieve all properties and any reviews associated with them.
 
 ```sql
@@ -54,3 +54,98 @@ Explanation:
 
 ---
 
+# SQL Subqueries – Airbnb Clone
+
+This file contains SQL subqueries for analyzing property ratings and user booking activity.
+
+---
+
+## What is a Subquery?
+
+A **subquery** is a query nested inside another SQL query. Subqueries can be used in `SELECT`, `FROM`, or `WHERE` clauses to help filter, compare, or derive new data.
+
+---
+
+## Types of Subqueries
+
+###  Non-Correlated Subquery
+
+A **Non-Correlated Subquery** is independent of the outer query. It runs once and returns a result that the outer query uses for filtering or comparison.
+
+**Example:**
+```sql
+SELECT ...
+FROM properties p
+WHERE p.property_id IN (
+    SELECT property_id
+    FROM reviews
+    GROUP BY property_id
+    HAVING AVG(rating) > 4.0
+);
+```
+
+**Explanation**:
+- The subquery calculates average ratings per `property_id`.
+- It runs only once and provides a list of properties with average ratings above 4.0.
+- The outer query fetches details for only those properties.
+
+---
+
+###  Correlated Subquery
+
+A **Correlated Subquery** depends on the outer query. It runs once **per row** of the outer query and uses values from the outer query to compute its result.
+
+**Example:**
+```sql
+SELECT ...
+FROM users u
+WHERE (
+    SELECT COUNT(*)
+    FROM bookings b
+    WHERE b.user_id = u.user_id
+) > 3;
+```
+
+**Explanation**:
+- The subquery is executed for each `user_id` from the outer query.
+- It counts how many bookings that specific user has made.
+- Only users with more than 3 bookings are returned.
+
+---
+
+## 1 Properties with Average Rating > 4.0
+
+**Objective**: Retrieve all properties that have an average rating greater than 4.0 using a subquery.
+
+```sql
+SELECT ...
+FROM properties p
+WHERE p.property_id IN (
+    SELECT property_id
+    FROM reviews
+    GROUP BY property_id
+    HAVING AVG(rating) > 4.0
+);
+```
+
+**Type**: Non-Correlated Subquery
+
+---
+
+## 2️ Users with More Than 3 Bookings
+
+**Objective**: Use a correlated subquery to find users who have made more than three bookings.
+
+```sql
+SELECT ...
+FROM users u
+WHERE (
+    SELECT COUNT(*)
+    FROM bookings b
+    WHERE b.user_id = u.user_id
+) > 3;
+```
+
+**Type**: Correlated Subquery
+
+---
