@@ -31,6 +31,9 @@ LEFT JOIN reviews r ON p.property_id = r.property_id;
 Explanation:
 * Returns all properties, including those without any review (NULLs in review fields).
 * Useful for identifying unrated properties.
+* ORDER BY p.property_id: Groups results by property so they’re easy to scan.
+* r.created_at: Orders reviews from oldest to newest per property.
+* This makes the output both compliant and readable.
 
 ---
 
