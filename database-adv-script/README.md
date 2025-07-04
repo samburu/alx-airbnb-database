@@ -149,3 +149,58 @@ WHERE (
 **Type**: Correlated Subquery
 
 ---
+
+# Aggregations & Window Functions – Airbnb Clone
+
+This module demonstrates how to use SQL aggregation (`COUNT`, `GROUP BY`) and window functions (`RANK`) for analytics in a relational database.
+
+---
+
+## 1 Count Total Bookings per User
+
+**Objective**: Find how many bookings each user has made.
+
+```sql
+SELECT
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    COUNT(b.booking_id) AS total_bookings
+FROM users u
+LEFT JOIN bookings b ON u.user_id = b.user_id
+GROUP BY u.user_id, u.first_name, u.last_name
+ORDER BY total_bookings DESC;
+```
+
+**Explanation**:
+- `COUNT(b.booking_id)` counts how many bookings each user has made.
+- `LEFT JOIN` ensures users with 0 bookings are also included.
+- Useful for generating user activity reports.
+
+---
+
+## 2 Rank Properties by Number of Bookings
+
+**Objective**: Rank properties by popularity (i.e., number of bookings received).
+
+```sql
+SELECT
+    p.property_id,
+    p.name AS property_name,
+    COUNT(b.booking_id) AS total_bookings,
+    RANK() OVER (ORDER BY COUNT(b.booking_id) DESC) AS booking_rank
+FROM properties p
+LEFT JOIN bookings b ON p.property_id = b.property_id
+GROUP BY p.property_id, p.name
+ORDER BY booking_rank;
+```
+
+**Explanation**:
+- Aggregates bookings per property using `COUNT`.
+- Uses `RANK()` to assign rankings (1 = most booked).
+- `RANK()` handles ties by assigning the same rank, skipping numbers as needed.
+- Can be modified to use `ROW_NUMBER()` or `DENSE_RANK()` depending on ranking rules.
+
+---
+
+
